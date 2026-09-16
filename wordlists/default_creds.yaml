@@ -1,0 +1,20 @@
+ssh:
+  - ["root", "root"]
+  - ["admin", "admin"]
+  - ["ubuntu", "ubuntu"]
+ftp:
+  - ["anonymous", "anonymous"]
+  - ["ftp", "ftp"]
+mysql:
+  - ["root", ""]
+  - ["root", "root"]
+postgres:
+  - ["postgres", "postgres"]
+tomcat:
+  - ["tomcat", "tomcat"]
+  - ["admin", "admin"]
+wordpress:
+  - ["admin", "admin"]
+  - ["admin", "password"]
+jenkins:
+  - ["admin", "admin"]
