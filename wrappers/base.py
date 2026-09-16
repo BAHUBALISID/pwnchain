@@ -1,14 +1,13 @@
 from __future__ import annotations
 import asyncio
 import shutil
-from abc import ABC, abstractmethod
 from typing import Optional
 
 from core.config import Config
 from core.logger import log
 
 
-class BaseTool(ABC):
+class BaseTool:
     name: str = "tool"
 
     def __init__(self, cfg: Config):
@@ -46,7 +45,3 @@ class BaseTool(ABC):
             return -1, "", "timeout"
 
         return proc.returncode or 0, out.decode(errors="replace"), err.decode(errors="replace")
-
-    @abstractmethod
-    async def run(self, *args, **kwargs):
-        ...
