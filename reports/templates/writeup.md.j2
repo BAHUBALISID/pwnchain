@@ -1,0 +1,51 @@
+# ChainPwn Writeup — {{ target }}
+
+Run ID: `{{ state.run_id }}`
+Started: {{ state.started }}
+Finished: {{ state.finished }}
+
+## Services
+
+| Port | Proto | Name | Product | Version |
+|------|-------|------|---------|---------|
+{% for s in services -%}
+| {{ s.port }} | {{ s.proto }} | {{ s.name }} | {{ s.product }} | {{ s.version }} |
+{% endfor %}
+
+## Findings (ranked)
+
+{% for f in findings -%}
+### {{ f.title }} — score {{ "%.2f"|format(f.score) }}
+- Severity: {{ f.severity.value }}
+- Source: {{ f.source }}
+{% if f.cve %}- CVE: {{ f.cve }}{% endif %}
+{% if f.edb_id %}- EDB: {{ f.edb_id }}{% endif %}
+{% if f.msf_module %}- MSF: {{ f.msf_module }}{% endif %}
+{% if f.nuclei_template %}- Nuclei: {{ f.nuclei_template }}{% endif %}
+- Evidence: `{{ f.evidence }}`
+
+{% endfor %}
+
+## Credentials
+
+{% for c in credentials -%}
+- `{{ c.username }}:{{ c.password }}` on {{ c.service }}@{{ c.host }} (source: {{ c.source }}, valid: {{ c.valid }})
+{% endfor %}
+
+## Sessions
+
+{% for s in sessions -%}
+- {{ s.id }} — {{ s.user }}@{{ s.host }} ({{ s.kind }}, root={{ s.root }}, stable={{ s.stable }})
+{% endfor %}
+
+## Flags
+
+{% for fl in flags -%}
+- **{{ fl.name }}** — `{{ fl.value }}` ({{ fl.path }})
+{% endfor %}
+
+## Errors
+
+{% for e in errors -%}
+- {{ e }}
+{% endfor %}
