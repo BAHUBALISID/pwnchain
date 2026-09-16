@@ -1,1 +1,69 @@
+general:
+  loot_dir: ./loot
+  max_concurrency: 8
+  shell_wait_seconds: 45
+  auto_stabilize: true
+  autorun_after_shell: true
 
+nmap:
+  binary: nmap
+  default_flags: ["-sC", "-sV", "-T4", "-Pn", "--open", "-oX", "-"]
+  udp_flags: ["-sU", "--top-ports", "50", "-T4", "-Pn"]
+
+ffuf:
+  binary: ffuf
+  default_flags: ["-of", "json", "-s"]
+  default_extensions: [".php", ".html", ".txt", ".bak"]
+
+gobuster:
+  binary: gobuster
+  mode: dir
+  default_flags: ["-q", "--no-error"]
+
+nuclei:
+  binary: nuclei
+  default_flags: ["-jsonl", "-silent", "-stats"]
+  severity: ["critical", "high", "medium"]
+
+searchsploit:
+  binary: searchsploit
+  default_flags: ["--json", "-w"]
+
+msf:
+  host: 127.0.0.1
+  port: 55553
+  user: msf
+  password: msf
+  ssl: true
+  autostart: true
+  msfrpcd_bin: msfrpcd
+  console_timeout: 240
+
+hydra:
+  binary: hydra
+  default_flags: ["-f", "-V", "-t", "4"]
+
+nikto:
+  binary: nikto
+  default_flags: ["-nointeractive", "-maxtime", "120s"]
+
+wpscan:
+  binary: wpscan
+  default_flags: ["--format", "json", "--no-banner", "--random-user-agent"]
+
+whatweb:
+  binary: whatweb
+  default_flags: ["--log-json=-", "-a", "3"]
+
+shell:
+  lhost_auto: true
+  lport_start: 4444
+  lport_end: 4500
+  default_shell: bash_tcp
+
+privesc:
+  run_linpeas: true
+  run_linux_smart_enum: true
+  run_winpeas: true
+  linpeas_path: /opt/PEAS/linpeas.sh
+  winpeas_url: https://github.com/peass-ng/PEASS-ng/releases/latest/download/winPEASx64.exe
