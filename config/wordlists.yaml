@@ -1,1 +1,169 @@
+presets:
 
+  quick:
+    dir:       { strategy: fallback,   lists: [common_small] }
+    vhost:     { strategy: fallback,   lists: [subdomains_small] }
+    subdomain: { strategy: fallback,   lists: [subdomains_small] }
+    param:     { strategy: fallback,   lists: [params_small] }
+    user:      { strategy: fallback,   lists: [users_small] }
+    pass:      { strategy: fallback,   lists: [passwords_small] }
+
+  normal:
+    dir:       { strategy: parallel,   lists: [common_medium, raft_small] }
+    vhost:     { strategy: sequential, lists: [subdomains_medium] }
+    subdomain: { strategy: sequential, lists: [subdomains_medium] }
+    param:     { strategy: merge,      lists: [params_medium] }
+    user:      { strategy: fallback,   lists: [users_small] }
+    pass:      { strategy: fallback,   lists: [passwords_small, rockyou_top1k] }
+
+  deep:
+    dir:       { strategy: parallel,   lists: [directory_medium, raft_large, common_medium] }
+    vhost:     { strategy: sequential, lists: [subdomains_large] }
+    subdomain: { strategy: sequential, lists: [subdomains_large, subdomains_medium] }
+    param:     { strategy: merge,      lists: [params_large, params_medium] }
+    user:      { strategy: sequential, lists: [users_small, users_medium] }
+    pass:      { strategy: sequential, lists: [passwords_small, rockyou_top1k, rockyou_top10k] }
+
+
+stages:
+
+  dir:
+    enabled: true
+    tool: ffuf
+    extensions: [".php", ".html", ".txt", ".bak", ".js", ".zip"]
+    threads: 40
+    lists:
+      common_small:
+        path: /usr/share/wordlists/dirb/common.txt
+        priority: 10
+        enabled: true
+        threads: 40
+      common_medium:
+        path: /usr/share/seclists/Discovery/Web-Content/common.txt
+        priority: 20
+        enabled: true
+        threads: 40
+      directory_medium:
+        path: /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt
+        priority: 30
+        enabled: true
+        threads: 40
+      raft_small:
+        path: /usr/share/seclists/Discovery/Web-Content/raft-small-words.txt
+        priority: 15
+        enabled: true
+        threads: 60
+      raft_large:
+        path: /usr/share/seclists/Discovery/Web-Content/raft-large-words.txt
+        priority: 40
+        enabled: true
+        threads: 60
+      api_endpoints:
+        path: /usr/share/seclists/Discovery/Web-Content/api/api-endpoints.txt
+        priority: 25
+        enabled: true
+        threads: 40
+      custom_target:
+        path: ./wordlists/custom_dir.txt
+        priority: 5
+        enabled: false
+        threads: 40
+        append_extension: true
+
+  vhost:
+    enabled: true
+    tool: ffuf
+    threads: 30
+    lists:
+      subdomains_small:
+        path: /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt
+        priority: 10
+        enabled: true
+      subdomains_medium:
+        path: /usr/share/seclists/Discovery/DNS/subdomains-top1million-20000.txt
+        priority: 20
+        enabled: true
+      subdomains_large:
+        path: /usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt
+        priority: 30
+        enabled: true
+      dns_jhaddix:
+        path: /usr/share/seclists/Discovery/DNS/dns-Jhaddix.txt
+        priority: 25
+        enabled: true
+
+  subdomain:
+    enabled: false
+    tool: ffuf
+    threads: 30
+    lists:
+      subdomains_small:
+        path: /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt
+        priority: 10
+        enabled: true
+      subdomains_medium:
+        path: /usr/share/seclists/Discovery/DNS/subdomains-top1million-20000.txt
+        priority: 20
+        enabled: true
+      subdomains_large:
+        path: /usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt
+        priority: 30
+        enabled: true
+
+  param:
+    enabled: true
+    tool: ffuf
+    threads: 40
+    lists:
+      params_small:
+        path: /usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt
+        priority: 10
+        enabled: true
+      params_medium:
+        path: /usr/share/seclists/Discovery/Web-Content/Arjun-parameters.txt
+        priority: 20
+        enabled: true
+      params_large:
+        path: /usr/share/seclists/Discovery/Web-Content/params-large.txt
+        priority: 30
+        enabled: true
+
+  user:
+    enabled: true
+    tool: hydra
+    threads: 4
+    lists:
+      users_small:
+        path: /usr/share/seclists/Usernames/top-usernames-shortlist.txt
+        priority: 10
+        enabled: true
+      users_medium:
+        path: /usr/share/seclists/Usernames/Names/names.txt
+        priority: 20
+        enabled: true
+      users_service:
+        path: /usr/share/seclists/Usernames/cirt-default-usernames.txt
+        priority: 15
+        enabled: true
+
+  pass:
+    enabled: true
+    tool: hydra
+    threads: 4
+    lists:
+      passwords_small:
+        path: /usr/share/seclists/Passwords/Common-Credentials/10-million-password-list-top-100.txt
+        priority: 10
+        enabled: true
+      rockyou_top1k:
+        path: /usr/share/seclists/Passwords/Common-Credentials/10-million-password-list-top-1000.txt
+        priority: 20
+        enabled: true
+      rockyou_top10k:
+        path: /usr/share/seclists/Passwords/Common-Credentials/10-million-password-list-top-10000.txt
+        priority: 30
+        enabled: true
+      rockyou:
+        path: /usr/share/wordlists/rockyou.txt
+        priority: 40
+        enabled: false
