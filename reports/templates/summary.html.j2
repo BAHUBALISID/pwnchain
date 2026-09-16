@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ChainPwn — {{ target }}</title>
+<style>
+body{font-family:system-ui,sans-serif;margin:2rem;background:#0f1117;color:#e6e6e6}
+h1,h2{color:#7cd1ff}
+table{border-collapse:collapse;margin:1rem 0;width:100%}
+th,td{border:1px solid #2a2e3a;padding:.4rem .6rem;text-align:left}
+th{background:#1a1e29}
+.sev-critical{color:#ff5555}
+.sev-high{color:#ff9955}
+.sev-medium{color:#ffd966}
+.sev-low{color:#88dd88}
+.sev-info{color:#aaaaaa}
+code{background:#1a1e29;padding:.1rem .3rem;border-radius:3px}
+</style>
+</head>
+<body>
+<h1>ChainPwn — {{ target }}</h1>
+<p>Run <code>{{ state.run_id }}</code> — {{ state.started }} → {{ state.finished }}</p>
+
+<h2>Services</h2>
+<table>
+<tr><th>Port</th><th>Proto</th><th>Name</th><th>Product</th><th>Version</th></tr>
+{% for s in services %}
+<tr><td>{{ s.port }}</td><td>{{ s.proto }}</td><td>{{ s.name }}</td><td>{{ s.product }}</td><td>{{ s.version }}</td></tr>
+{% endfor %}
+</table>
+
+<h2>Findings</h2>
+<table>
+<tr><th>Score</th><th>Title</th><th>Severity</th><th>Source</th><th>Ref</th></tr>
+{% for f in findings %}
+<tr>
+  <td>{{ "%.2f"|format(f.score) }}</td>
+  <td>{{ f.title }}</td>
+  <td class="sev-{{ f.severity.value }}">{{ f.severity.value }}</td>
+  <td>{{ f.source }}</td>
+  <td>{% if f.cve %}{{ f.cve }}{% elif f.edb_id %}EDB-{{ f.edb_id }}{% elif f.msf_module %}{{ f.msf_module }}{% elif f.nuclei_template %}{{ f.nuclei_template }}{% endif %}</td>
+</tr>
+{% endfor %}
+</table>
+
+<h2>Credentials</h2>
+<ul>
+{% for c in credentials %}
+<li><code>{{ c.username }}:{{ c.password }}</code> @ {{ c.service }}/{{ c.host }} ({{ c.source }})</li>
+{% endfor %}
+</ul>
+
+<h2>Flags</h2>
+<ul>
+{% for fl in flags %}
+<li><strong>{{ fl.name }}</strong> — <code>{{ fl.value }}</code></li>
+{% endfor %}
+</ul>
+</body>
+</html>
